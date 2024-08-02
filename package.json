@@ -1,0 +1,57 @@
+{
+  "name": "specjest",
+  "version": "1.0.0",
+  "description": "CLI utility to flip from .feature to jest tests and vice-versa",
+  "main": "dist/cli.app.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ioprodz/specjest.git"
+  },
+  "keywords": [
+    "jest",
+    "spec",
+    "bdd",
+    "acceptance",
+    "test",
+    "gherkin",
+    "tdd",
+    "convert",
+    "generate",
+    "documentation"
+  ],
+  "author": "Osmane Kalache",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ioprodz/specjest/issues"
+  },
+  "homepage": "https://github.com/ioprodz/specjest#readme",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.1.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.4",
+    "typescript": "^5.5.4"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.ts",
+      "**/?(*.)+(spec|test).ts"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    }
+  },
+  "bin": {
+    "specjest": "./dist/cli.app.js"
+  }
+}
