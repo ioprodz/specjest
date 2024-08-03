@@ -35,16 +35,16 @@ function printHelp() {
 
     ⏩ Convert gherkin (.feature) to a todo test file
 
-      $ npm specjest test <path/to/file.feature>
+      $ npx specjest test <path/to/file.feature>
   
     ⏩ Convert behavioural jest tests to a gherkin (.feature)
 
       ⚙️ Run all tests and generate feature files:
-        $ npm jest --json | npm specjest feat
+        $ npm run test --json | npx specjest feat
 
       ⚙️ To generate for specific path or test pattern:
-        $ npm jest <testRegex> --json | npm specjest feat
-        $ npm jest <testRegex> --json | npm specjest feat
+        $ npm run test <testRegex> --json | npx specjest feat
+        $ npm run test <testRegex> --json | npx specjest feat
 
     Note: depending on your pacakge.json configuration, you may need to adjust 
           these commands to take into consideration the project's jest configuration.
@@ -62,7 +62,7 @@ function handleGetTest(filePath: string) {
 
   writeFileAndFeedback(testFilePath, content);
   console.log(
-    `\n🧪 start in TDD mode: yarn test:spec ${toRelativePath(
+    `\n🧪 start in TDD mode: npm run test ${toRelativePath(
       testFilePath
     )} --watch --verbose`
   );

@@ -1,9 +1,9 @@
-import path from 'path';
-import { BehaviouralTestSuite } from '../behavioural-tests/behavioural-test-suite.entity';
+import path from "path";
+import { BehaviouralTestSuite } from "../behavioural-tests/behavioural-test-suite.entity";
 import {
   BehaviouralTestDescription,
   BehaviouralTestDescriptionType,
-} from '../behavioural-tests/behavioural-test-description.value';
+} from "../behavioural-tests/behavioural-test-description.value";
 
 type TestFileFromFeatureInput = {
   filePath: string;
@@ -32,8 +32,8 @@ export class TestFileFromFeatureUsecase {
 
   private getSanitizedAssertionList(input: TestFileFromFeatureInput) {
     const rawAssertionList = input.gherkin
-      .split('\n')
-      .filter((l) => l !== '')
+      .split("\n")
+      .filter((l) => l !== "")
       .map((l) => l.trim());
 
     const [featureDescription] = rawAssertionList;
@@ -53,7 +53,7 @@ export class TestFileFromFeatureUsecase {
 
   private featurePathToTestPath(featurePath: string) {
     const { base, dir } = path.parse(featurePath);
-    const [fileName] = base.split('.');
-    return `${dir}/${fileName}.use-case.spec.ts`;
+    const [fileName] = base.split(".");
+    return `${dir}/${fileName}.spec.ts`;
   }
 }

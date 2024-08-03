@@ -1,43 +1,43 @@
-import { TestFileFromFeatureUsecase } from './test-file-from-feature.use-case';
+import { TestFileFromFeatureUsecase } from "./test-file-from-feature.use-case";
 
-describe('Feature: BDD ⭐ TestFileFromFeature', () => {
+describe("Feature: BDD ⭐ TestFileFromFeature", () => {
   const usecase = new TestFileFromFeatureUsecase();
 
-  describe('Scenario: 🎉 Happy path 😀', () => {
-    describe('Given the input is correct gherkin feature definition', () => {
-      describe('When we pass it to the use-case', () => {
-        test('Then it generates jest test suite content with assertions to do', () => {
+  describe("Scenario: 🎉 Happy path 😀", () => {
+    describe("Given the input is correct gherkin feature definition", () => {
+      describe("When we pass it to the use-case", () => {
+        test("Then it generates jest test suite content with assertions to do", () => {
           const result = usecase.execute({
-            filePath: '/test/do-somthing.feature',
+            filePath: "/test/do-somthing.feature",
             gherkin: inputGherkinFixture,
           });
           expect(result.content).toBe(expectedOutputTest);
         });
-        test('And it computes correct test file path', () => {
+        test("And it computes correct test file path", () => {
           const result = usecase.execute({
-            filePath: '/test/do-somthing.feature',
+            filePath: "/test/do-somthing.feature",
             gherkin: inputGherkinFixture,
           });
-          expect(result.filePath).toBe('/test/do-somthing.use-case.spec.ts');
+          expect(result.filePath).toBe("/test/do-somthing.spec.ts");
         });
       });
     });
   });
 
-  describe('Scenario: 🎥 feed incorrect gherkin', () => {
-    describe('Given 🙅 the input is incorrect gherkin', () => {
-      describe('When we pass it to the use-case', () => {
-        test('Then operation is rejected', () => {
+  describe("Scenario: 🎥 feed incorrect gherkin", () => {
+    describe("Given 🙅 the input is incorrect gherkin", () => {
+      describe("When we pass it to the use-case", () => {
+        test("Then operation is rejected", () => {
           expect(() =>
             usecase.execute({
-              filePath: '/test/do-somthing.feature',
+              filePath: "/test/do-somthing.feature",
               gherkin: `
               Scenario: lol
               Test of feature
               Given somthing
               Then do somthing
             `,
-            }),
+            })
           ).toThrow();
         });
       });
