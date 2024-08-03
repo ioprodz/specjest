@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { FeatureFileFromTestUsecase } from "./behavioural-testing/feature-file-from-test/feature-file-from-test.use-case";
 import { TestFileFromFeatureUsecase } from "./behavioural-testing/test-file-from-feature/test-file-from-feature.use-case";
 
