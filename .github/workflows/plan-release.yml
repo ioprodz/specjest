@@ -1,4 +1,4 @@
-name: "Release on Comment"
+name: "🚀 Release on Comment"
 
 on:
   issue_comment:
@@ -9,15 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request # Ensures it's triggered only on PR comments
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: ⬢ Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "16" # or the version you need
 
-      - name: Parse comment for release version
+      - name: 💬 Parse comment for release version
         id: parse_version
         run: |
           COMMENT_BODY="${{ github.event.comment.body }}"
@@ -28,27 +28,50 @@ jobs:
             exit 1
           fi
 
-      - name: Update package.json version
+      - name: 👍 Add thumbs-up reaction to comment
+        run: |
+          COMMENT_ID=${{ github.event.comment.id }}
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.squirrel-girl-preview+json" \
+            -X POST "https://api.github.com/repos/${{ github.repository }}/issues/comments/$COMMENT_ID/reactions" \
+            -d '{"content":"+1"}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      
+
+      - name: ✍️ Update package.json version
         run: |
           jq '.version = env.RELEASE_VERSION' package.json > temp.json && mv temp.json package.json
         shell: bash
 
-      - name: Commit changes
+      - name: 🔖 Commit changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git commit -am "chore(release): Set version to $RELEASE_VERSION"
 
-      - name: Push commit
+      - name: 📤 Push commit
         run: |
           git push origin HEAD:${{ github.head_ref }}
       
-      - name: Update PR title
+      - name: ✍️ Update PR title
         env:
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
           DATE=$(date +'%Y-%m-%d')
           gh pr edit ${{ github.event.issue.number }} --title "chore(release): $DATE ($RELEASE_VERSION)"
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📣 Post release confirmation comment
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          RELEASE_VERSION=${{ env.RELEASE_VERSION }}
+          COMMENT_BODY="### 🚀 Release planned: $DATE ($RELEASE_VERSION)"
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments" \
+            -d "{\"body\": \"$COMMENT_BODY\"}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
