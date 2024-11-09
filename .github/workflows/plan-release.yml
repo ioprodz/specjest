@@ -38,8 +38,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      
-
       - name: ✍️ Update package.json version
         run: |
           jq '.version = env.RELEASE_VERSION' package.json > temp.json && mv temp.json package.json
@@ -54,7 +52,7 @@ jobs:
       - name: 📤 Push commit
         run: |
           git push origin HEAD:${{ github.head_ref }}
-      
+
       - name: ✍️ Update PR title
         env:
           RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
@@ -62,8 +60,6 @@ jobs:
           DATE=$(date +'%Y-%m-%d')
           gh pr edit ${{ github.event.issue.number }} --title "chore(release): $DATE ($RELEASE_VERSION)"
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📣 Post release confirmation comment
         run: |
