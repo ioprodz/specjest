@@ -12,6 +12,7 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       - name: ⬢ Set up Node.js
@@ -51,13 +52,10 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add package.json
           git commit -m "chore(release): Set version to $RELEASE_VERSION"
-      - name: Debug GitHub Context
-        run: |
-          echo "Branch Ref: ${{ github.event.pull_request.head.ref }}"
-          echo "Repository: ${{ github.repository }}"
+
       - name: 📤 Push commit
         run: |
-          git push origin HEAD
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
