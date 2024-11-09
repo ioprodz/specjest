@@ -1,0 +1,36 @@
+# create a workflow that will run on every push to the main branch or a pull request to the main branch
+name: CI/CD
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: ⬢ Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+      - name: ♻️ Cache Yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/node_modules
+            .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock', '.github/workflows/*') }}
+
+      - name: 💾 Install dependencies
+        run: yarn install
+
+      - name: 🧪 Run tests
+        run: yarn test
+
+      - name: 🧱 Build
+        run: yarn build
