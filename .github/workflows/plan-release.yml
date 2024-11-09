@@ -7,15 +7,17 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request # Ensures it's triggered only on PR comments
+    if: github.event.issue.pull_request
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: ⬢ Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16" # or the version you need
+          node-version: "16"
 
       - name: 💬 Parse comment for release version
         id: parse_version
@@ -47,19 +49,24 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git commit -am "chore(release): Set version to $RELEASE_VERSION"
-
+          git add package.json
+          git commit -m "chore(release): Set version to $RELEASE_VERSION"
+      - name: Debug GitHub Context
+        run: |
+          echo "Branch Ref: ${{ github.event.pull_request.head.ref }}"
+          echo "Repository: ${{ github.repository }}"
       - name: 📤 Push commit
         run: |
-          git push origin HEAD:${{ github.head_ref }}
+          git push origin HEAD
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ✍️ Update PR title
-        env:
-          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
         run: |
           DATE=$(date +'%Y-%m-%d')
           gh pr edit ${{ github.event.issue.number }} --title "chore(release): $DATE ($RELEASE_VERSION)"
-        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📣 Post release confirmation comment
         run: |
