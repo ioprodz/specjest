@@ -1,0 +1,54 @@
+name: "Release on Comment"
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request # Ensures it's triggered only on PR comments
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # or the version you need
+
+      - name: Parse comment for release version
+        id: parse_version
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          if [[ $COMMENT_BODY =~ ^release\ ([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            echo "RELEASE_VERSION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          else
+            echo "Comment does not match 'release <semver>' format."
+            exit 1
+          fi
+
+      - name: Update package.json version
+        run: |
+          jq '.version = env.RELEASE_VERSION' package.json > temp.json && mv temp.json package.json
+        shell: bash
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore(release): Set version to $RELEASE_VERSION"
+
+      - name: Push commit
+        run: |
+          git push origin HEAD:${{ github.head_ref }}
+      
+      - name: Update PR title
+        env:
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          gh pr edit ${{ github.event.issue.number }} --title "chore(release): $DATE ($RELEASE_VERSION)"
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
