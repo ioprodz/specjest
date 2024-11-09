@@ -1,104 +1,128 @@
-import { FeatureFileFromTestUsecase } from './feature-file-from-test.use-case';
+import { FeatureFileFromTestUsecase } from "./feature-file-from-test.use-case";
 
-describe('Feature: BDD ⭐ FeatureFileFromTestUsecase', () => {
+feature("BDD ⭐ Feature file from test usecase", () => {
   const usecase = new FeatureFileFromTestUsecase();
-  describe('Scenario: 🎉 Happy path 😀', () => {
-    describe('Given jest payload is correct', () => {
-      describe('When its passed to the parser', () => {
-        test('Then it converts test file path the .feature path', () => {
-          const { successful } = usecase.execute(correctJestOutputFixture);
-          expect(successful[0].filePath).toBe(
-            '/.tooling/code-generators/bdd/feature-file-from-test.feature',
-          );
-        });
+  scenario("🎉 Happy path 😀", () => {
+    given("jest payload is correct", () => {
+      when("its passed to the parser", () => {
+        then(
+          [
+            "it converts test file path the .feature path",
+            "computes the gherkin file content",
+            "gives 0 failed files",
+          ],
+          () => {
+            const { successful, failed } = usecase.execute(
+              correctJestOutputFixture
+            );
+            expect(successful[0].filePath).toBe(
+              "/.tooling/code-generators/bdd/feature-file-from-test.feature"
+            );
 
-        test('And computes the gherkin file content', () => {
-          const { successful } = usecase.execute(correctJestOutputFixture);
-          expect(successful[0].content).toBe(expectedGerkin);
-        });
+            expect(successful[0].content).toBe(expectedGerkin);
 
-        test('And gives 0 failed files', () => {
-          const { failed } = usecase.execute(correctJestOutputFixture);
-          expect(failed.length).toBe(0);
+            expect(failed.length).toBe(0);
+          }
+        );
+      });
+    });
+  });
+
+  scenario("trying to parse bad jest output", () => {
+    given(" 🙅 jest payload is corrupted", () => {
+      when("its passed to the parser", () => {
+        then("opration is rejected", () => {
+          expect(() => usecase.execute("corrupted")).toThrow();
         });
       });
     });
   });
 
-  describe('Scenario: 🎥 trying to parse bad jest output', () => {
-    describe('Given 🙅 jest payload is corrupted', () => {
-      describe('When its passed to the parser', () => {
-        test('Then opration is rejected', () => {
-          expect(() => usecase.execute('corrupted')).toThrow();
+  scenario(
+    'bad gherkin syntax - example: "Feator:" instead of "Feature:"',
+    () => {
+      given(
+        [
+          "jest payload is correct",
+          "🙅 keyword 'Feature:' is mispelled 'Feator:'",
+        ],
+        () => {
+          when("When its passed to the parser", () => {
+            then(
+              [
+                "its present in errored files",
+                "it reports Bdd Description parse error",
+              ],
+              () => {
+                const { failed } = usecase.execute(badGherkinSyntaxJestOutput1);
+                expect(failed[0].filePath).toBe(
+                  "/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts"
+                );
+                expect(failed[0].content).toBe(
+                  "cannot determine type of Bdd Description: Feator: FeatureFileFromTestUsecase"
+                );
+              }
+            );
+          });
+        }
+      );
+    }
+  );
+
+  scenario("bad gherkin syntax - unidentified test phase (Given)", () => {
+    given(
+      [
+        "jest payload is correct",
+        "🙅 a scenario is missing the keyword 'Given'",
+      ],
+      () => {
+        when("When its passed to the parser", () => {
+          then(
+            [
+              "its present in errored files",
+              "it reports phase parse error for Given",
+            ],
+            () => {
+              const { failed } = usecase.execute(badGherkinSyntaxJestOutput2);
+              expect(failed[0].filePath).toBe(
+                "/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts"
+              );
+              expect(failed[0].content).toBe(
+                "Cannot identify bdd test phase: Given"
+              );
+            }
+          );
         });
-      });
-    });
+      }
+    );
   });
 
-  describe('Scenario: 🎥 bad gherkin syntax - example: "Feator:" instead of "Feature:"', () => {
-    describe(`
-      Given jest payload is correct
-      And 🙅 keyword 'Feature:' is mispelled 'Feator:'
-    `, () => {
-      describe('When its passed to the parser', () => {
-        test('Then its present in errored files', () => {
-          const { failed } = usecase.execute(badGherkinSyntaxJestOutput1);
-          expect(failed[0].filePath).toBe(
-            '/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts',
+  scenario("bad gherkin syntax - unidentified test phase (When)", () => {
+    given(
+      [
+        "jest payload is correct",
+        "🙅 a scenario is missing the keyword 'When'",
+      ],
+      () => {
+        when("its passed to the parser", () => {
+          then(
+            [
+              "Then its present in errored files",
+              "And it reports phase parse error for When",
+            ],
+            () => {
+              const { failed } = usecase.execute(badGherkinSyntaxJestOutput3);
+              expect(failed[0].filePath).toBe(
+                "/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts"
+              );
+              expect(failed[0].content).toBe(
+                "Cannot identify bdd test phase: When"
+              );
+            }
           );
         });
-        test('And it reports Bdd Description parse error', () => {
-          const { failed } = usecase.execute(badGherkinSyntaxJestOutput1);
-          expect(failed[0].content).toBe(
-            'cannot determine type of Bdd Description: Feator: FeatureFileFromTestUsecase',
-          );
-        });
-      });
-    });
-  });
-
-  describe('Scenario: 🎥 bad gherkin syntax - unidentified test phase (Given)', () => {
-    describe(`
-      Given jest payload is correct
-      And 🙅 a scenario is missing the keyword 'Given'
-    `, () => {
-      describe('When its passed to the parser', () => {
-        test('Then its present in errored files', () => {
-          const { failed } = usecase.execute(badGherkinSyntaxJestOutput2);
-          expect(failed[0].filePath).toBe(
-            '/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts',
-          );
-        });
-        test('And it reports phase parse error for Given', () => {
-          const { failed } = usecase.execute(badGherkinSyntaxJestOutput2);
-          expect(failed[0].content).toBe(
-            'Cannot identify bdd test phase: Given',
-          );
-        });
-      });
-    });
-  });
-
-  describe('Scenario: 🎥 bad gherkin syntax - unidentified test phase (When)', () => {
-    describe(`
-      Given jest payload is correct
-      And 🙅 a scenario is missing the keyword 'When'
-    `, () => {
-      describe('When its passed to the parser', () => {
-        test('Then its present in errored files', () => {
-          const { failed } = usecase.execute(badGherkinSyntaxJestOutput3);
-          expect(failed[0].filePath).toBe(
-            '/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts',
-          );
-        });
-        test('And it reports phase parse error for When', () => {
-          const { failed } = usecase.execute(badGherkinSyntaxJestOutput3);
-          expect(failed[0].content).toBe(
-            'Cannot identify bdd test phase: When',
-          );
-        });
-      });
-    });
+      }
+    );
   });
 });
 

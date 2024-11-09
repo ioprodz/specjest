@@ -5,7 +5,7 @@
   "main": "dist/cli.app.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest --coverage --verbose"
   },
   "repository": {
     "type": "git",
@@ -40,7 +40,6 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testMatch": [
-      "**/__tests__/**/*.ts",
       "**/?(*.)+(spec|test).ts"
     ],
     "moduleFileExtensions": [
@@ -49,8 +48,14 @@
     ],
     "transform": {
       "^.+\\.ts$": "ts-jest"
-    }
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.ts"
+    ]
   },
+  "files": [
+    "dist"
+  ],
   "bin": {
     "specjest": "./dist/cli.app.js"
   }
