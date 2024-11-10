@@ -29,7 +29,7 @@ feature("BDD ⭐ Feature file from test usecase", () => {
   });
 
   scenario("trying to parse bad jest output", () => {
-    given(" 🙅 jest payload is corrupted", () => {
+    given("🙅 jest payload is corrupted", () => {
       when("its passed to the parser", () => {
         then("opration is rejected", () => {
           expect(() => usecase.execute("corrupted")).toThrow();
@@ -107,8 +107,8 @@ feature("BDD ⭐ Feature file from test usecase", () => {
         when("its passed to the parser", () => {
           then(
             [
-              "Then its present in errored files",
-              "And it reports phase parse error for When",
+              "its present in errored files",
+              "it reports phase parse error for When",
             ],
             () => {
               const { failed } = usecase.execute(badGherkinSyntaxJestOutput3);
