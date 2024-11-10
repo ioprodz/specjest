@@ -2,10 +2,11 @@
   "name": "specjest",
   "version": "1.1.1",
   "description": "CLI utility to flip from .feature to jest tests and vice-versa",
-  "main": "dist/cli.app.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest --verbose",
+    "test:ci": "jest --ci --coverage --verbose"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,6 @@
     "preset": "ts-jest",
     "testEnvironment": "node",
     "testMatch": [
-      "**/__tests__/**/*.ts",
       "**/?(*.)+(spec|test).ts"
     ],
     "moduleFileExtensions": [
@@ -49,8 +49,14 @@
     ],
     "transform": {
       "^.+\\.ts$": "ts-jest"
-    }
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.ts"
+    ]
   },
+  "files": [
+    "dist"
+  ],
   "bin": {
     "specjest": "./dist/cli.app.js"
   }

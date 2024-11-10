@@ -1,18 +1,17 @@
-Feature: BDD ⭐ TestFileFromFeature
+Feature: 🚀 BDD ⭐ Test file from feature
 
   Scenario: 🎉 Happy path 😀
 
-    Given the input is correct gherkin feature definition
+    Given Given the input is correct gherkin feature definition
 
-    When we pass it to the use-case
+    When ⚡ When we pass it to the use-case
 
     Then it generates jest test suite content with assertions to do
-    And it computes correct test file path
 
-  Scenario: 🎥 feed incorrect gherkin
+  Scenario: feed incorrect gherkin
 
     Given 🙅 the input is incorrect gherkin
 
-    When we pass it to the use-case
+    When ⚡ we pass it to the use-case
 
     Then operation is rejected
