@@ -26,7 +26,6 @@ export const bold: BoldFn = (str) =>
 
 export interface FormatterProps {
   description: string;
-  index: number;
   color: ColorFn;
   bold: BoldFn;
 }

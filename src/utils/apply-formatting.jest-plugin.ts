@@ -1,40 +1,55 @@
 import { bold, color, FormatterFn } from "./cli.formatter";
 
-const formatDescriptions = (
-  desc: string | string[],
-  formatter: FormatterFn
-) => {
-  if (!Array.isArray(desc)) {
-    desc = [desc];
-  }
-  const clearStyles = "\x1b[0m";
-  return desc
-    .map(
-      (description, index) =>
-        clearStyles +
-        formatter({
-          description,
-          index,
-          color,
-          bold,
-        })
-    )
-    .join("\n");
-};
+type DescriptionInput = string;
 
-export function applyFormatting(
-  jestFn: typeof describe | typeof it,
+export function useDescribe(
+  describe: jest.Describe,
   formatter: FormatterFn
-) {
-  const newFn = (desc: string | string[], fn: () => void) =>
-    jestFn(formatDescriptions(desc, formatter), fn);
-  newFn.skip = (desc: string | string[], fn: () => void) =>
-    jestFn.skip(formatDescriptions(desc, formatter), fn);
-  newFn.only = (desc: string | string[], fn: () => void) =>
-    jestFn.only(formatDescriptions(desc, formatter), fn);
-  if ("todo" in jestFn) {
-    newFn.todo = (desc: string | string[]) =>
-      jestFn.todo(formatDescriptions(desc, formatter));
-  }
+): jest.Describe {
+  const { each, skip, only, ...rest } = describe;
+  const newFn = (description: DescriptionInput, fn: () => void) =>
+    describe(formatter({ description, bold, color }), fn);
+
+  newFn.each = describe.each;
+
+  newFn.skip = (description: DescriptionInput, fn: () => void) =>
+    skip(formatter({ description, bold, color }), fn);
+
+  newFn.only = (description: DescriptionInput, fn: () => void) =>
+    only(formatter({ description, bold, color }), fn);
+
+  newFn.each = each;
+
+  Object.entries(rest).forEach(([key, value]) => {
+    // @ts-ignore
+    newFn[key] = value;
+  });
+  // @ts-ignore
+  return newFn;
+}
+
+export function useTest(it: jest.It, formatter: FormatterFn): jest.It {
+  const { each, skip, only, todo, ...rest } = it;
+  const newFn = (description: DescriptionInput, fn: () => void) =>
+    it(formatter({ description, bold, color }), fn);
+
+  newFn.each = it.each;
+
+  newFn.skip = (description: DescriptionInput, fn: () => void) =>
+    skip(formatter({ description, bold, color }), fn);
+
+  newFn.only = (description: DescriptionInput, fn: () => void) =>
+    only(formatter({ description, bold, color }), fn);
+
+  newFn.todo = (description: DescriptionInput) =>
+    todo(formatter({ description, bold, color }));
+
+  newFn.each = each;
+
+  Object.entries(rest).forEach(([key, value]) => {
+    // @ts-ignore
+    newFn[key] = value;
+  });
+  // @ts-ignore
   return newFn;
 }

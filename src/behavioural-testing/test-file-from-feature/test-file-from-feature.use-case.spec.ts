@@ -7,7 +7,7 @@ feature("BDD ⭐ Test file from feature", () => {
     given("Given the input is correct gherkin feature definition", () => {
       when("When we pass it to the use-case", () => {
         then(
-          ["it generates jest test suite content with assertions to do"],
+          "it generates jest test suite content with assertions to do",
           () => {
             const result = usecase.execute({
               filePath: "/test/do-somthing.feature",
