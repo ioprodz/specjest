@@ -31,9 +31,9 @@
   },
   "homepage": "https://github.com/ioprodz/specjest#readme",
   "devDependencies": {
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.1.0",
-    "jest": "^29.7.0",
+    "jest": "^30.0.4",
     "ts-jest": "^29.2.4",
     "typescript": "^5.5.4"
   },
