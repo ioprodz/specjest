@@ -1,17 +1,16 @@
-import { useDescribe, useTest } from "./src/utils/apply-formatting.jest-plugin";
+import { useDescribe, useTest } from "./utils/apply-formatting.jest-plugin";
 
 declare global {
-  function feature(name: JestFnInput, fn: jest.EmptyFunction): void;
-  function scenario(name: JestFnInput, fn: jest.EmptyFunction): void;
-  function given(name: JestFnInput, fn: jest.EmptyFunction): void;
-  function when(name: JestFnInput, fn: jest.EmptyFunction): void;
+  function feature(name: string, fn: jest.EmptyFunction): void;
+  function scenario(name: string, fn: jest.EmptyFunction): void;
+  function given(name: string, fn: jest.EmptyFunction): void;
+  function when(name: string, fn: jest.EmptyFunction): void;
   function then(
     name: string,
     fn?: jest.ProvidesCallback,
     timeout?: number
   ): void;
 }
-type JestFnInput = string | number | Function | jest.FunctionLike;
 
 // Indent continuation lines to align with text after the prefix.
 // baseIndent: Jest's 2 spaces per nesting level
@@ -22,7 +21,7 @@ const indentContinuationLines = (text: string, baseIndent: number, prefixLength:
 };
 
 globalThis.feature = useDescribe(describe, ({ color, bold, description }) =>
-  color("magenta", `Feature: 🚀 ${bold(indentContinuationLines(description, 2, 11))}`)  // "Feature: 🚀 " = 11 chars
+  color("magenta", `Feature: ${bold(indentContinuationLines(description, 2, 9))}`)  // "Feature: " = 9 chars
 );
 
 globalThis.scenario = useDescribe(describe, ({ color, bold, description }) =>
@@ -34,21 +33,11 @@ globalThis.given = useDescribe(describe, ({ color, bold, description }) =>
 );
 
 globalThis.when = useDescribe(describe, ({ color, bold, description }) =>
-  color("yellow", `When ⚡ ${bold(indentContinuationLines(description, 8, 7))}`)  // "When ⚡ " = 7 chars
+  color("yellow", `When ${bold(indentContinuationLines(description, 8, 5))}`)  // "When " = 5 chars
 );
 
 globalThis.then = useTest(
   it,
   ({ color, bold, description }) =>
     "\x1b[0m" + color("green", `Then ${bold(indentContinuationLines(description, 10, 7))}`)  // "✓ Then " = 7 chars (includes Jest's checkmark)
-);
-
-globalThis.describe = useDescribe(describe, ({ color, bold, description }) =>
-  color("yellow", `${bold(description)}`)
-);
-
-globalThis.it = useTest(
-  it,
-  ({ color, bold, description }) =>
-    "\x1b[0m" + color("green", `${bold(description)}`)
 );

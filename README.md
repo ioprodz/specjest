@@ -1,98 +1,165 @@
-# 😎 SpecJest
+# 🧪 SpecJest
 
-A simple CLI tool that allows conversion from .feature (gherkin) syntax to Jest test file, and the inverse (ie from a test, generate feature files).
+BDD helpers for Jest tests.
 
-## 🧩 Usage:
+![BDD colored output](docs/sample-output.png)
 
-Pre-requisites: [Jest](https://jestjs.io/docs/getting-started)
+```
+.feature ✨ <---> ✨ .test.ts
+```
 
-Install as dev dependency:
+## 📦 Install
 
 ```bash
 npm install specjest --save-dev
 ```
 
-or use directly as a globally installed package
+## 🔄 Integration
 
-```bash
-npx specjest <command>
+```mermaid
+flowchart LR
+    subgraph ✍️ Write
+        F["📄 .feature"] -->|specjest test| T["🧪 .test.ts"]
+    end
+    subgraph 📚 Document
+        T2["🧪 .test.ts"] -->|jest --json| J["📊 JSON"]
+        J -->|specjest feat| F2["📄 .feature"]
+    end
 ```
 
-⏩ Convert gherkin (.feature) to a todo test file
+## 🎯 Use Cases
 
-Create a .feature file:
+### 1. 📄 ➡️ 🧪 Feature to Test
 
+Convert a `.feature` file into a Jest test with `test.todo()` stubs.
+
+```bash
+npx specjest test path/to/file.feature
+```
+
+**Input** (`user.feature`):
 ```gherkin
-Feature: Create User Command
+Feature: Create User
 
-  Scenario: Happy path - new user
-
-    Given a non-existing user
-    And avatar_url is set
-    And name is set
-    And email is set
-    And selected_project_id is null
-
-    When user data is sumbitted
-
-    Then user is persisted to DB
-    And user created event is dispatched
+  Scenario: Valid user
+    Given a new user
+    When data is submitted
+    Then user is saved
 ```
 
-```bash
-npx specjest test <path/to/file.feature>
-```
-
-Result: a Jest test is created with all the tests set to "todo"
-
+**Output** (`user.test.ts`):
 ```typescript
-describe(`Feature: Create User Command`, () => {
-  describe(`Scenario: Happy path - new user`, () => {
-    describe(`Given a non-existing user
-              And avatar_url is set
-              And name is set
-              And email is set
-              And selected_project_id is null`, () => {
-      describe(`When user data is sumbitted`, () => {
-        test.todo(`Then user is persisted to DB`);
-        test.todo(`And user created event is dispatched`);
+describe(`Feature: Create User`, () => {
+  describe(`Scenario: Valid user`, () => {
+    describe(`Given a new user`, () => {
+      describe(`When data is submitted`, () => {
+        test.todo(`Then user is saved`);
       });
     });
   });
 });
 ```
 
-⏩ Convert behavioural jest tests to a gherkin (.feature)
+### 2. 🧪 ➡️ 📄 Test to Feature
 
-⚙️ Run all tests and generate feature files:
-
-This basically consists of adding --json directive to you jest command and piping it into Specjest, if your tests contain correct gherkin syntax they will be processed.
+Generate `.feature` files from existing Jest tests.
 
 ```bash
-<your-jest-command> --json | npx specjest feat
+npx jest --json | npx specjest feat
 ```
 
-example `yarn test:spec --json | npx specjest feat`
-
-⚙️ To generate for specific path or test pattern:
-
+Or for specific tests:
 ```bash
-<your-jest-command> <testRegex> --json | npx specjest feat
+npx jest user.test.ts --json | npx specjest feat
 ```
 
-Note: depending on your pacakge.json configuration, you may need to adjust these commands to take into consideration the project's jest configuration.
+Tests must use Gherkin prefixes: `Feature:`, `Scenario:`, `Given`, `When`, `Then`, `And`.
 
-Result : Specjest will report on all test files processed and the outcome
+### 3. 🎨 BDD Test Helpers (Optional)
 
+Add global BDD functions (`feature`, `scenario`, `given`, `when`, `then`) with colored output.
+
+![BDD colored output](docs/sample-output.png)
+
+**⚡ Quick setup** - import the preset:
+
+```typescript
+// jest.setup.ts
+import "specjest/bdd";
 ```
-✅ Successfully written feature files:
 
-  📄 src/app/emails/use-cases/sync-all-command/sync-all.feature
-
-❌ Failed to parse tests:
-
-  📄 src/app/email/model/validation.test.ts
-    💬 cannot determine type of Bdd Description: should...
-
-✨  Done in 0.62s.
+```javascript
+// jest.config.js
+module.exports = {
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"]
+};
 ```
+
+That's it! 🎉 All BDD globals are now available.
+
+---
+
+<details>
+<summary>🔧 <strong>Custom setup</strong> - configure formatting manually</summary>
+
+**jest.setup.ts**:
+```typescript
+import { applyFormatting } from "specjest";
+
+declare global {
+  function feature(name: string, fn: () => void): void;
+  function scenario(name: string, fn: () => void): void;
+  function given(name: string, fn: () => void): void;
+  function when(name: string, fn: () => void): void;
+  function then(name: string, fn?: jest.ProvidesCallback, timeout?: number): void;
+}
+
+globalThis.feature = applyFormatting(describe, ({ description, color, bold }) =>
+  color("magenta", `Feature: ${bold(description)}`)
+);
+globalThis.scenario = applyFormatting(describe, ({ description, color, bold }) =>
+  color("cyan", `Scenario: ${bold(description)}`)
+);
+globalThis.given = applyFormatting(describe, ({ description, color, bold }) =>
+  color("blue", `Given ${bold(description)}`)
+);
+globalThis.when = applyFormatting(describe, ({ description, color, bold }) =>
+  color("yellow", `When ${bold(description)}`)
+);
+globalThis.then = applyFormatting(it, ({ description, color, bold }) =>
+  color("green", `Then ${bold(description)}`)
+);
+```
+
+**Usage**:
+```typescript
+feature("User Registration", () => {
+  scenario("Valid input", () => {
+    given("a new email", () => {
+      when("form is submitted", () => {
+        then("user is created", () => {
+          expect(true).toBe(true);
+        });
+      });
+    });
+  });
+});
+```
+
+</details>
+
+## 📖 CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `specjest test <file.feature>` | 📄 ➡️ 🧪 Convert feature to test |
+| `jest --json \| specjest feat` | 🧪 ➡️ 📄 Convert tests to features |
+| `specjest` | ❓ Show help |
+
+## 🏷️ Gherkin Keywords
+
+Recognized prefixes: `Feature:`, `Scenario:`, `Given`, `When`, `Then`, `And`
+
+## 📜 License
+
+MIT

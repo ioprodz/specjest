@@ -3,6 +3,10 @@
   "version": "1.1.2",
   "description": "CLI utility to flip from .feature to jest tests and vice-versa",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./bdd": "./dist/bdd.js"
+  },
   "scripts": {
     "build": "tsc",
     "test": "jest --verbose",
