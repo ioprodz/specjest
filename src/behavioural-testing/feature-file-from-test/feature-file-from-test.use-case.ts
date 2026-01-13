@@ -45,21 +45,43 @@ export class FeatureFileFromTestUsecase {
   }
 
   private parseRawToJson(rawTestOutput: string): Record<string, any> {
-    const lines = rawTestOutput.split("\n");
-    let i = lines.length - 1;
-    while (i >= 0) {
-      try {
-        const result = JSON.parse(lines[i - 1]).testResults;
-        return result;
-      } catch (e) {
-        // just skip this line
-      }
-      i--;
+    const trimmedOutput = rawTestOutput.trim();
+
+    if (!trimmedOutput) {
+      throw new Error(
+        `No input received from stdin.\n\n` +
+        `Make sure you're piping Jest output correctly:\n` +
+        `  <your-jest-command> --json | npx specjest feat\n\n` +
+        `Troubleshooting:\n` +
+        `  1. Ensure Jest runs with --json flag\n` +
+        `  2. Check that your Jest command outputs to stdout (not just stderr)\n` +
+        `  3. Try: npx jest --json > output.json && cat output.json | npx specjest feat`
+      );
     }
-    // we parsed / returned no lines
-    throw new Error(`Error: Jest output could not be parsed:
-    ${rawTestOutput}
-    `);
+
+    const lines = trimmedOutput.split("\n");
+    // Search from the end since JSON is typically the last line
+    for (let i = lines.length - 1; i >= 0; i--) {
+      try {
+        const parsed = JSON.parse(lines[i]);
+        if (parsed.testResults) {
+          return parsed.testResults;
+        }
+      } catch (e) {
+        // Not valid JSON, try previous line
+      }
+    }
+
+    // No valid JSON found
+    const preview = trimmedOutput.length > 200
+      ? trimmedOutput.slice(0, 200) + "..."
+      : trimmedOutput;
+    throw new Error(
+      `Could not find Jest JSON output in stdin.\n\n` +
+      `Received ${trimmedOutput.length} bytes, but no valid Jest JSON was found.\n` +
+      `Input preview:\n${preview}\n\n` +
+      `Make sure Jest is running with --json flag and the output contains testResults.`
+    );
   }
 
   private getSanitizedAssertions(testSuite: Record<string, any>): string[][] {

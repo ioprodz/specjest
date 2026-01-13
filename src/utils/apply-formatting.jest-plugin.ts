@@ -30,16 +30,25 @@ export function useDescribe(
 
 export function useTest(it: jest.It, formatter: FormatterFn): jest.It {
   const { each, skip, only, todo, ...rest } = it;
-  const newFn = (description: DescriptionInput, fn: () => void) =>
-    it(formatter({ description, bold, color }), fn);
+  const newFn = (
+    description: DescriptionInput,
+    fn?: jest.ProvidesCallback,
+    timeout?: number
+  ) => it(formatter({ description, bold, color }), fn, timeout);
 
   newFn.each = it.each;
 
-  newFn.skip = (description: DescriptionInput, fn: () => void) =>
-    skip(formatter({ description, bold, color }), fn);
+  newFn.skip = (
+    description: DescriptionInput,
+    fn?: jest.ProvidesCallback,
+    timeout?: number
+  ) => skip(formatter({ description, bold, color }), fn, timeout);
 
-  newFn.only = (description: DescriptionInput, fn: () => void) =>
-    only(formatter({ description, bold, color }), fn);
+  newFn.only = (
+    description: DescriptionInput,
+    fn?: jest.ProvidesCallback,
+    timeout?: number
+  ) => only(formatter({ description, bold, color }), fn, timeout);
 
   newFn.todo = (description: DescriptionInput) =>
     todo(formatter({ description, bold, color }));

@@ -32,7 +32,22 @@ feature("BDD ⭐ Feature file from test usecase", () => {
     given("🙅 jest payload is corrupted", () => {
       when("its passed to the parser", () => {
         then("opration is rejected", () => {
-          expect(() => usecase.execute("corrupted")).toThrow();
+          expect(() => usecase.execute("corrupted")).toThrow(
+            "Could not find Jest JSON output"
+          );
+        });
+      });
+    });
+
+    given("🙅 jest payload is empty", () => {
+      when("its passed to the parser", () => {
+        then("helpful error message is shown", () => {
+          expect(() => usecase.execute("")).toThrow(
+            "No input received from stdin"
+          );
+          expect(() => usecase.execute("   \n  \n  ")).toThrow(
+            "No input received from stdin"
+          );
         });
       });
     });
