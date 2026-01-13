@@ -1,6 +1,6 @@
 {
   "name": "specjest",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "CLI utility to flip from .feature to jest tests and vice-versa",
   "main": "dist/index.js",
   "exports": {
