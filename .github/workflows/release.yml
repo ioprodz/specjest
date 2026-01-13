@@ -1,68 +1,44 @@
-name: "🚀 Release"
+name: "Release"
 
 on:
   push:
     branches:
       - main
-    paths:
-      - "src/**"
-      - "package.json"
-      - "package-lock.json"
-      - "tsconfig.json"
-      - "jest.config.js"
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: ⬢ Set up Node.js
-        uses: actions/setup-node@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
           cache: "npm"
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🧪 Run tests
+      - name: Run tests
         run: npm test
 
-      - name: 🔨 Build
+      - name: Build
         run: npm run build
 
-      - name: 🔍 Get package version
-        id: package_version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: 🏷️ Check if tag exists
-        id: check_tag
-        run: |
-          if git rev-parse "v${{ steps.package_version.outputs.VERSION }}" >/dev/null 2>&1; then
-            echo "TAG_EXISTS=true" >> $GITHUB_OUTPUT
-          else
-            echo "TAG_EXISTS=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: 🔖 Create and push tag
-        if: steps.check_tag.outputs.TAG_EXISTS == 'false'
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "v${{ steps.package_version.outputs.VERSION }}" -m "Release v${{ steps.package_version.outputs.VERSION }}"
-          git push origin "v${{ steps.package_version.outputs.VERSION }}"
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 📤 Publish to npm
-        if: steps.check_tag.outputs.TAG_EXISTS == 'false'
-        run: npm publish
-        env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
