@@ -14,17 +14,13 @@ BDD helpers for Jest tests.
 npm install specjest --save-dev
 ```
 
-## 🔄 Integration
+## 🔄 Integration withing your test runner
 
 ```mermaid
 flowchart LR
-    subgraph ✍️ Write
-        F["📄 .feature"] -->|specjest test| T["🧪 .test.ts"]
-    end
-    subgraph 📚 Document
-        T2["🧪 .test.ts"] -->|jest --json| J["📊 JSON"]
-        J -->|specjest feat| F2["📄 .feature"]
-    end
+    F[.feature] -->|specjest test| T[.test.ts]
+    T2[.test.ts] -->|jest --json| J[JSON]
+    J -->|specjest feat| F2[.feature]
 ```
 
 ## 🎯 Use Cases
