@@ -1,4 +1,4 @@
-name: "Release"
+name: "🚀 Release"
 
 on:
   push:
@@ -15,29 +15,29 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Set up Node.js
+      - name: ⬢ Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org"
           cache: "npm"
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: npm ci
 
-      - name: Run tests
+      - name: 🧪 Run tests
         run: npm test
 
-      - name: Build
+      - name: 🔨 Build
         run: npm run build
 
-      - name: Release
+      - name: 🎉 Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
