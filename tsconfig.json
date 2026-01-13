@@ -4,15 +4,9 @@
         "declaration": true,
         "module": "commonjs",
         "outDir": "./dist",
-        "rootDir": "./src",
         "strict": true,
         "esModuleInterop": true
     },
-    "exclude": [
-        "dist",
-        "node_modules",
-        "**/*.test.ts",
-        "**/*.spec.ts",
-        "./jest.setup.ts",
-    ],
+    "include": ["src/**/*", "jest.setup.ts"],
+    "exclude": ["dist", "node_modules"]
 }

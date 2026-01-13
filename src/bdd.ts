@@ -1,16 +1,5 @@
 import { useDescribe, useTest } from "./utils/apply-formatting.jest-plugin";
-
-declare global {
-  function feature(name: string | string[], fn: jest.EmptyFunction): void;
-  function scenario(name: string | string[], fn: jest.EmptyFunction): void;
-  function given(name: string | string[], fn: jest.EmptyFunction): void;
-  function when(name: string | string[], fn: jest.EmptyFunction): void;
-  function then(
-    name: string | string[],
-    fn?: jest.ProvidesCallback,
-    timeout?: number
-  ): void;
-}
+import "./bdd.d";
 
 // Indent continuation lines to align with text after the prefix.
 // baseIndent: Jest's 2 spaces per nesting level
@@ -31,22 +20,22 @@ const indentContinuationLines = (text: string, baseIndent: number, prefixLength:
 
 globalThis.feature = useDescribe(describe, ({ color, bold, description }) =>
   color("magenta", `Feature: ${bold(indentContinuationLines(description, 2, 9))}`)  // "Feature: " = 9 chars
-);
+) as any;
 
 globalThis.scenario = useDescribe(describe, ({ color, bold, description }) =>
   color("cyan", `Scenario: ${bold(indentContinuationLines(description, 4, 10))}`)  // "Scenario: " = 10 chars
-);
+) as any;
 
 globalThis.given = useDescribe(describe, ({ color, bold, description }) =>
   color("blue", `Given ${bold(indentContinuationLines(description, 6, 6))}`)  // "Given " = 6 chars
-);
+) as any;
 
 globalThis.when = useDescribe(describe, ({ color, bold, description }) =>
   color("yellow", `When ${bold(indentContinuationLines(description, 8, 5))}`)  // "When " = 5 chars
-);
+) as any;
 
 globalThis.then = useTest(
   it,
   ({ color, bold, description }) =>
     "\x1b[0m" + color("green", `Then ${bold(indentContinuationLines(description, 10, 7))}`)  // "✓ Then " = 7 chars (includes Jest's checkmark)
-);
+) as any;

@@ -1,17 +1,5 @@
 import { useDescribe, useTest } from "./src/utils/apply-formatting.jest-plugin";
-
-type BddDescriptionInput = string | string[];
-declare global {
-  function feature(name: BddDescriptionInput, fn: jest.EmptyFunction): void;
-  function scenario(name: BddDescriptionInput, fn: jest.EmptyFunction): void;
-  function given(name: BddDescriptionInput, fn: jest.EmptyFunction): void;
-  function when(name: BddDescriptionInput, fn: jest.EmptyFunction): void;
-  function then(
-    name: BddDescriptionInput,
-    fn?: jest.ProvidesCallback,
-    timeout?: number
-  ): void;
-}
+import "./src/bdd.d";
 
 // Indent continuation lines to align with text after the prefix.
 // baseIndent: Jest's 2 spaces per nesting level

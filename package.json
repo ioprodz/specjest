@@ -8,7 +8,7 @@
     "./bdd": "./dist/bdd.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "jest --verbose",
     "test:ci": "jest --ci --coverage --verbose"
   },
