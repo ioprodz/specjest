@@ -1,12 +1,12 @@
 import { useDescribe, useTest } from "./utils/apply-formatting.jest-plugin";
 
 declare global {
-  function feature(name: string, fn: jest.EmptyFunction): void;
-  function scenario(name: string, fn: jest.EmptyFunction): void;
-  function given(name: string, fn: jest.EmptyFunction): void;
-  function when(name: string, fn: jest.EmptyFunction): void;
+  function feature(name: string | string[], fn: jest.EmptyFunction): void;
+  function scenario(name: string | string[], fn: jest.EmptyFunction): void;
+  function given(name: string | string[], fn: jest.EmptyFunction): void;
+  function when(name: string | string[], fn: jest.EmptyFunction): void;
   function then(
-    name: string,
+    name: string | string[],
     fn?: jest.ProvidesCallback,
     timeout?: number
   ): void;
@@ -15,9 +15,18 @@ declare global {
 // Indent continuation lines to align with text after the prefix.
 // baseIndent: Jest's 2 spaces per nesting level
 // prefixLength: length of prefix text (e.g., "Given ", "✓ Then ")
+// Lines starting with "And " get reduced indent (prefixLength - 4) so content aligns
 const indentContinuationLines = (text: string, baseIndent: number, prefixLength: number): string => {
-  const indent = " ".repeat(baseIndent + prefixLength);
-  return text.replace(/\n/g, `\n${indent}`);
+  const lines = text.split("\n");
+  return lines
+    .map((line, index) => {
+      if (index === 0) return line;
+      const indent = line.startsWith("And ")
+        ? " ".repeat(baseIndent + prefixLength - 4)
+        : " ".repeat(baseIndent + prefixLength);
+      return indent + line;
+    })
+    .join("\n");
 };
 
 globalThis.feature = useDescribe(describe, ({ color, bold, description }) =>

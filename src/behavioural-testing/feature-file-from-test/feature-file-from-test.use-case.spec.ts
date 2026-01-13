@@ -10,7 +10,7 @@ feature("BDD ⭐ Feature file from test usecase", () => {
             "it converts test file path the .feature path",
             "computes the gherkin file content",
             "gives 0 failed files",
-          ].join("\n"),
+          ],
           () => {
             const { successful, failed } = usecase.execute(
               correctJestOutputFixture
@@ -60,14 +60,14 @@ feature("BDD ⭐ Feature file from test usecase", () => {
         [
           "jest payload is correct",
           "🙅 keyword 'Feature:' is mispelled 'Feator:'",
-        ].join("\n"),
+        ],
         () => {
           when("When its passed to the parser", () => {
             then(
               [
                 "its present in errored files",
                 "it reports Bdd Description parse error",
-              ].join("\n"),
+              ],
               () => {
                 const { failed } = usecase.execute(badGherkinSyntaxJestOutput1);
                 expect(failed[0].filePath).toBe(
@@ -89,14 +89,14 @@ feature("BDD ⭐ Feature file from test usecase", () => {
       [
         "jest payload is correct",
         "🙅 a scenario is missing the keyword 'Given'",
-      ].join("\n"),
+      ],
       () => {
         when("When its passed to the parser", () => {
           then(
             [
               "its present in errored files",
               "it reports phase parse error for Given",
-            ].join("\n"),
+            ],
             () => {
               const { failed } = usecase.execute(badGherkinSyntaxJestOutput2);
               expect(failed[0].filePath).toBe(
@@ -117,14 +117,14 @@ feature("BDD ⭐ Feature file from test usecase", () => {
       [
         "jest payload is correct",
         "🙅 a scenario is missing the keyword 'When'",
-      ].join("\n"),
+      ],
       () => {
         when("its passed to the parser", () => {
           then(
             [
               "its present in errored files",
               "it reports phase parse error for When",
-            ].join("\n"),
+            ],
             () => {
               const { failed } = usecase.execute(badGherkinSyntaxJestOutput3);
               expect(failed[0].filePath).toBe(

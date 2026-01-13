@@ -1,6 +1,15 @@
 import { bold, color, FormatterFn } from "./cli.formatter";
 
-type DescriptionInput = string;
+type DescriptionInput = string | string[];
+
+const normalizeDescription = (input: DescriptionInput): string => {
+  if (typeof input === "string") {
+    return input;
+  }
+  return input
+    .map((line, index) => (index === 0 ? line : `And ${line}`))
+    .join("\n");
+};
 
 export function useDescribe(
   describe: jest.Describe,
@@ -8,15 +17,15 @@ export function useDescribe(
 ): jest.Describe {
   const { each, skip, only, ...rest } = describe;
   const newFn = (description: DescriptionInput, fn: () => void) =>
-    describe(formatter({ description, bold, color }), fn);
+    describe(formatter({ description: normalizeDescription(description), bold, color }), fn);
 
   newFn.each = describe.each;
 
   newFn.skip = (description: DescriptionInput, fn: () => void) =>
-    skip(formatter({ description, bold, color }), fn);
+    skip(formatter({ description: normalizeDescription(description), bold, color }), fn);
 
   newFn.only = (description: DescriptionInput, fn: () => void) =>
-    only(formatter({ description, bold, color }), fn);
+    only(formatter({ description: normalizeDescription(description), bold, color }), fn);
 
   newFn.each = each;
 
@@ -34,7 +43,7 @@ export function useTest(it: jest.It, formatter: FormatterFn): jest.It {
     description: DescriptionInput,
     fn?: jest.ProvidesCallback,
     timeout?: number
-  ) => it(formatter({ description, bold, color }), fn, timeout);
+  ) => it(formatter({ description: normalizeDescription(description), bold, color }), fn, timeout);
 
   newFn.each = it.each;
 
@@ -42,16 +51,16 @@ export function useTest(it: jest.It, formatter: FormatterFn): jest.It {
     description: DescriptionInput,
     fn?: jest.ProvidesCallback,
     timeout?: number
-  ) => skip(formatter({ description, bold, color }), fn, timeout);
+  ) => skip(formatter({ description: normalizeDescription(description), bold, color }), fn, timeout);
 
   newFn.only = (
     description: DescriptionInput,
     fn?: jest.ProvidesCallback,
     timeout?: number
-  ) => only(formatter({ description, bold, color }), fn, timeout);
+  ) => only(formatter({ description: normalizeDescription(description), bold, color }), fn, timeout);
 
   newFn.todo = (description: DescriptionInput) =>
-    todo(formatter({ description, bold, color }));
+    todo(formatter({ description: normalizeDescription(description), bold, color }));
 
   newFn.each = each;
 

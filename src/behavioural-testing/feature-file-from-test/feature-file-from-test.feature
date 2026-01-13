@@ -17,6 +17,7 @@ Feature: 🚀 BDD ⭐ Feature file from test usecase
     When ⚡ its passed to the parser
 
     Then opration is rejected
+    Then helpful error message is shown
 
   Scenario: bad gherkin syntax - example: "Feator:" instead of "Feature:"
 
@@ -45,5 +46,5 @@ Feature: 🚀 BDD ⭐ Feature file from test usecase
 
     When ⚡ its passed to the parser
 
-    Then Then its present in errored files
-    And And it reports phase parse error for When
+    Then its present in errored files
+    And it reports phase parse error for When
