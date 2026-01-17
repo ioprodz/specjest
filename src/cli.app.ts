@@ -9,6 +9,7 @@ import {
   toRelativePath,
   writeFileAndFeedback,
 } from "./infra/file-system.infra";
+import { color } from "./utils/cli.formatter";
 
 const [command, ...commandParams] = Cli.getProcessArguments();
 const main = (): void => {
@@ -80,10 +81,10 @@ async function handleGetFeature() {
       });
     }
     if (failed.length > 0) {
-      console.log("\n\n❌ Failed to parse tests:\n");
+      console.log(color("yellow", "\n\n⚠️  Failed to parse tests:\n"));
       failed.forEach(({ filePath, content }) => {
-        console.log(`  📄 ${toRelativePath(filePath)}`);
-        console.log(`    💬 ${content}`);
+        console.log(color("yellow", `  📄 ${toRelativePath(filePath)}`));
+        console.log(color("yellow", `    💬 ${content}`));
       });
     }
   });

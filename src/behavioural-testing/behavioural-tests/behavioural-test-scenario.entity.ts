@@ -88,11 +88,20 @@ ${this.props.postConditions.map((i) => i.toGherkin()).join('\n')}`;
       }
     });
 
+    const truncate = (str: string, len: number) =>
+      str.length > len ? str.slice(0, len) + '...' : str;
+
     if (preConditions.length === 0) {
-      throw new Error('Cannot identify bdd test phase: Given');
+      const found = givenWhenThen[0] || assertions[1] || assertions[0];
+      throw new Error(
+        `Expected "Given ..." but found "${truncate(found, 20)}"`
+      );
     }
     if (actions.length === 0) {
-      throw new Error('Cannot identify bdd test phase: When');
+      const found = givenWhenThen.find(s => !s.startsWith('Given') && !s.startsWith('And') && !s.startsWith('But')) || givenWhenThen[1];
+      throw new Error(
+        `Expected "When ..." but found "${truncate(found || '', 20)}"`
+      );
     }
 
     return new TestScenario({

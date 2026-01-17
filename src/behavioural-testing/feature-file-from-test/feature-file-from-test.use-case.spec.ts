@@ -102,9 +102,7 @@ feature("BDD ⭐ Feature file from test usecase", () => {
               expect(failed[0].filePath).toBe(
                 "/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts"
               );
-              expect(failed[0].content).toBe(
-                "Cannot identify bdd test phase: Given"
-              );
+              expect(failed[0].content).toContain('Expected "Given ..."');
             }
           );
         });
@@ -130,9 +128,7 @@ feature("BDD ⭐ Feature file from test usecase", () => {
               expect(failed[0].filePath).toBe(
                 "/.tooling/code-generators/bdd/feature-file-from-test.use-case.spec.ts"
               );
-              expect(failed[0].content).toBe(
-                "Cannot identify bdd test phase: When"
-              );
+              expect(failed[0].content).toContain('Expected "When ..."');
             }
           );
         });
