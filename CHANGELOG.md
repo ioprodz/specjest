@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/ioprodz/specjest/compare/v1.2.1...v1.3.0) (2026-01-17)
+
+
+### Features
+
+* clearer error message for unparsed tests ([0a43a2b](https://github.com/ioprodz/specjest/commit/0a43a2b4201a51dfa572845f235a48bb4731fa1b))
+* support bdd desc "But" ([db9fadd](https://github.com/ioprodz/specjest/commit/db9fadd0aa3a67f127e0591e41617f991e62873a))
+
 ## [1.2.1](https://github.com/ioprodz/specjest/compare/v1.2.0...v1.2.1) (2026-01-13)
 
 # [1.2.0](https://github.com/ioprodz/specjest/compare/v1.1.2...v1.2.0) (2026-01-13)
