@@ -7,7 +7,7 @@ Feature: 🚀 BDD ⭐ Feature file from test usecase
     When ⚡ its passed to the parser
 
     Then it converts test file path the .feature path
-    And computes the gherkin file content
+    And generates the gherkin file content
     And gives 0 failed files
 
   Scenario: trying to parse bad jest output

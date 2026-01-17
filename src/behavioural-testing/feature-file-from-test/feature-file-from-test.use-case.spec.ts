@@ -8,7 +8,7 @@ feature("BDD ⭐ Feature file from test usecase", () => {
         then(
           [
             "it converts test file path the .feature path",
-            "computes the gherkin file content",
+            "generates the gherkin file content",
             "gives 0 failed files",
           ],
           () => {
