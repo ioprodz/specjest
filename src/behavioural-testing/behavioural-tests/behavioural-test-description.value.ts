@@ -7,6 +7,7 @@ export enum BehaviouralTestDescriptionType {
   When = 'When',
   Then = 'Then',
   And = 'And',
+  But = 'But',
 }
 
 const BddDescriptionTypeFormatting: Record<
@@ -19,6 +20,7 @@ const BddDescriptionTypeFormatting: Record<
   When: { literal: 'When', indent: 4 },
   Then: { literal: 'Then', indent: 4 },
   And: { literal: 'And', indent: 4 },
+  But: { literal: 'But', indent: 4 },
 };
 
 export class BehaviouralTestDescription implements SerializableBehaviouralTest {

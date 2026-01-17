@@ -39,3 +39,7 @@ globalThis.then = useTest(
   ({ color, bold, description }) =>
     "\x1b[0m" + color("green", `Then ${bold(indentContinuationLines(description, 10, 7))}`)  // "✓ Then " = 7 chars (includes Jest's checkmark)
 ) as any;
+
+globalThis.but = useDescribe(describe, ({ color, bold, description }) =>
+  color("red", `But ${bold(indentContinuationLines(description, 10, 4))}`)  // "But " = 4 chars
+) as any;

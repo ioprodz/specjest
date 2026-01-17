@@ -68,7 +68,7 @@ ${this.props.postConditions.map((i) => i.toGherkin()).join('\n')}`;
     let phase: BehaviouralTestDescriptionType;
     givenWhenThen.forEach((statement, statementIndex) => {
       const desc = BehaviouralTestDescription.create(statement);
-      if (desc.type !== BehaviouralTestDescriptionType.And) {
+      if (desc.type !== BehaviouralTestDescriptionType.And && desc.type !== BehaviouralTestDescriptionType.But) {
         phase = desc.type;
       }
       if (statementIndex === givenWhenThen.length - 1) {

@@ -112,6 +112,27 @@ declare global {
     fn?: jest.ProvidesCallback,
     timeout?: number
   ): void;
+
+  /**
+   * Defines a contrasting or negative condition within a scenario.
+   * Used for exceptions or contrasts to the current context.
+   * Maps to a Gherkin `But` step.
+   *
+   * @param name - The contrasting condition description (string or array of strings)
+   * @param fn - Function containing nested steps
+   *
+   * @example
+   * given("the user is logged in", () => {
+   *   but("they don't have admin privileges", () => {
+   *     when("they access the admin page", () => {
+   *       then("they see an access denied message", () => {
+   *         // assertions
+   *       });
+   *     });
+   *   });
+   * });
+   */
+  function but(name: BddDescriptionInput, fn: jest.EmptyFunction): void;
 }
 
 export {};
