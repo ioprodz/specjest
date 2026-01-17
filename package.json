@@ -10,7 +10,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "test": "jest --verbose",
-    "test:ci": "jest --ci --coverage --verbose"
+    "test:ci": "jest --ci --coverage --verbose",
+    "gen:feat": "npm run build && jest --json 2>/dev/null | node dist/cli.app.js feat",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -39,6 +41,7 @@
     "@semantic-release/git": "^10.0.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.7",
+    "husky": "^9.1.7",
     "jest": "^30.2.0",
     "semantic-release": "^25.0.2",
     "ts-jest": "^29.4.6",

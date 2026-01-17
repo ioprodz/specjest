@@ -1,0 +1,13 @@
+# Build first to ensure specjest is up to date
+npm run build || exit 1
+
+# Run tests on changed files and generate feature files
+JEST_OUTPUT=$(npx jest --onlyChanged --json 2>/dev/null)
+
+if [ -n "$JEST_OUTPUT" ]; then
+  echo "$JEST_OUTPUT" | node dist/cli.app.js feat
+
+  # Add any generated/updated .feature files to the commit
+  git add -u "*.feature" 2>/dev/null
+  git add "*.feature" 2>/dev/null
+fi
